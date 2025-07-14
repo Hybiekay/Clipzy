@@ -1,9 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tiktok_clone/constants.dart';
-import 'package:tiktok_clone/views/screens/auth/login_screen.dart';
-import 'package:tiktok_clone/views/widgets/text_input_field.dart';
+import 'package:clipzy/constants.dart';
+import 'package:clipzy/views/screens/auth/login_screen.dart';
+import 'package:clipzy/views/widgets/text_input_field.dart';
 
 class SignupScreen extends StatelessWidget {
   SignupScreen({super.key});

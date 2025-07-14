@@ -4,10 +4,10 @@ import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:tiktok_clone/constants.dart';
-import 'package:tiktok_clone/models/user.dart' as model;
-import 'package:tiktok_clone/views/screens/auth/login_screen.dart';
-import 'package:tiktok_clone/views/screens/home_screen.dart';
+import 'package:clipzy/constants.dart';
+import 'package:clipzy/models/user.dart' as model;
+import 'package:clipzy/views/screens/auth/login_screen.dart';
+import 'package:clipzy/views/screens/home_screen.dart';
 
 class AuthController extends GetxController {
   static AuthController instance = Get.find();

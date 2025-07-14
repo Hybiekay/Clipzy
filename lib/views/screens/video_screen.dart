@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tiktok_clone/constants.dart';
-import 'package:tiktok_clone/controllers/video_controller.dart';
-import 'package:tiktok_clone/views/screens/comment_screen.dart';
-import 'package:tiktok_clone/views/widgets/circle_animation.dart';
-import 'package:tiktok_clone/views/widgets/video_player_item.dart';
+import 'package:clipzy/constants.dart';
+import 'package:clipzy/controllers/video_controller.dart';
+import 'package:clipzy/views/screens/comment_screen.dart';
+import 'package:clipzy/views/widgets/circle_animation.dart';
+import 'package:clipzy/views/widgets/video_player_item.dart';
 import 'package:get/get.dart';
 
 class VideoScreen extends StatelessWidget {

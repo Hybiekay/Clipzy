@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:tiktok_clone/constants.dart';
-import 'package:tiktok_clone/models/comment.dart';
+import 'package:clipzy/constants.dart';
+import 'package:clipzy/models/comment.dart';
 
 class CommentController extends GetxController {
   final Rx<List<Comment>> _comments = Rx<List<Comment>>([]);

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:tiktok_clone/controllers/search_controller.dart' as mine;
+import 'package:clipzy/controllers/search_controller.dart' as mine;
 import 'package:get/get.dart';
-import 'package:tiktok_clone/models/user.dart';
-import 'package:tiktok_clone/views/screens/profile_screen.dart';
+import 'package:clipzy/models/user.dart';
+import 'package:clipzy/views/screens/profile_screen.dart';
 
 class SearchScreen extends StatelessWidget {
   SearchScreen({super.key});
 
-  final mine.SearchController searchController = Get.put(mine.SearchController());
+  final mine.SearchController searchController = Get.put(
+    mine.SearchController(),
+  );
 
   @override
   Widget build(BuildContext context) {

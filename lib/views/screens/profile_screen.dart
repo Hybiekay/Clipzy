@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/instance_manager.dart';
-import 'package:tiktok_clone/constants.dart';
-import 'package:tiktok_clone/controllers/profile_controller.dart';
+import 'package:clipzy/constants.dart';
+import 'package:clipzy/controllers/profile_controller.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String uid;
