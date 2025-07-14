@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "197147642320",
+    "project_id": "tictok-27c2b",
+    "storage_bucket": "tictok-27c2b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:197147642320:android:f1d4c41170394651bfd1d5",
+        "android_client_info": {
+          "package_name": "com.example.clipzy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlNAag1IWeZLdnvLAMN3H7WKx1X0nKteg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
