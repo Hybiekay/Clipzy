@@ -47,75 +47,126 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                _controller.value.isInitialized
-                    ? AspectRatio(
-                      aspectRatio: _controller.value.aspectRatio,
-                      child: VideoPlayer(_controller),
-                    )
-                    : const CircularProgressIndicator(color: Colors.white),
-                const SizedBox(height: 24),
-                TextInputField(
-                  controller: _songController,
-                  labelText: 'Song Name',
-                  icon: Icons.music_note,
-                ),
-                const SizedBox(height: 16),
-                TextInputField(
-                  controller: _captionController,
-                  labelText: 'Caption',
-                  icon: Icons.closed_caption,
-                ),
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_songController.text.isEmpty ||
-                          _captionController.text.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Please fill in all fields'),
-                          ),
-                        );
-                        return;
-                      }
-                      _uploadVideoController.uploadVideo(
-                        _songController.text.trim(),
-                        _captionController.text.trim(),
-                        widget.videoPath,
-                        widget.videoFile,
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.redAccent,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      'Share!',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+      body:
+          _controller.value.isInitialized
+              ? Stack(
+                children: [
+                  /// Fullscreen Video Player
+                  SizedBox.expand(
+                    child: FittedBox(
+                      fit: BoxFit.cover,
+                      child: SizedBox(
+                        width: _controller.value.size.width,
+                        height: _controller.value.size.height,
+                        child: VideoPlayer(_controller),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+                  if (_uploadVideoController.isUploading.value) ...[
+                    Positioned(
+                      top: 30,
+                      child: LinearProgressIndicator(
+                        value: _uploadVideoController.uploadProgress.value,
+                        backgroundColor: Colors.grey[800],
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          Colors.purpleAccent,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '${(_uploadVideoController.uploadProgress.value * 100).toStringAsFixed(0)}%',
+                      style: const TextStyle(color: Colors.white70),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+
+                  /// Overlay with gradient and form
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black87,
+                            Colors.black,
+                          ],
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextInputField(
+                            controller: _songController,
+                            labelText: 'Song Name',
+                            icon: Icons.music_note,
+                          ),
+                          const SizedBox(height: 12),
+                          TextInputField(
+                            controller: _captionController,
+                            labelText: 'Caption',
+                            icon: Icons.closed_caption,
+                          ),
+                          const SizedBox(height: 16),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (_songController.text.isEmpty ||
+                                    _captionController.text.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Please fill in all fields',
+                                      ),
+                                    ),
+                                  );
+                                  return;
+                                }
+                                _uploadVideoController.uploadVideo(
+                                  _songController.text.trim(),
+                                  _captionController.text.trim(),
+                                  widget.videoPath,
+                                  widget.videoFile,
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.purpleAccent,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: const Text(
+                                'Share!',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              )
+              : const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              ),
     );
   }
 }

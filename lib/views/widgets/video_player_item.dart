@@ -6,37 +6,76 @@ class VideoPlayerItem extends StatefulWidget {
   const VideoPlayerItem({super.key, required this.videoUrl});
 
   @override
-  _VideoPlayerItemState createState() => _VideoPlayerItemState();
+  State<VideoPlayerItem> createState() => _VideoPlayerItemState();
 }
 
 class _VideoPlayerItemState extends State<VideoPlayerItem> {
-  late VideoPlayerController videoPlayerController;
+  late VideoPlayerController _controller;
+  bool _isPlaying = true;
 
   @override
   void initState() {
     super.initState();
-    videoPlayerController = VideoPlayerController.network(widget.videoUrl)
-      ..initialize().then((value) {
-        videoPlayerController.play();
-        videoPlayerController.setVolume(1);
+    print("Video URL: ${widget.videoUrl}");
+
+    _controller = VideoPlayerController.network(widget.videoUrl)
+      ..initialize().then((_) {
+        setState(() {});
+        _controller.play();
+        _controller.setLooping(true);
+        _controller.setVolume(1);
       });
   }
 
   @override
   void dispose() {
+    _controller.dispose();
     super.dispose();
-    videoPlayerController.dispose();
+  }
+
+  void _togglePlayback() {
+    setState(() {
+      if (_controller.value.isPlaying) {
+        _controller.pause();
+        _isPlaying = false;
+      } else {
+        _controller.play();
+        _isPlaying = true;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return Container(
-      width: size.width,
-      height: size.height,
-      decoration: const BoxDecoration(color: Colors.black),
-      child: VideoPlayer(videoPlayerController),
+    return GestureDetector(
+      onTap: _togglePlayback,
+      child: Container(
+        width: size.width,
+        height: size.height,
+        color: Colors.black,
+        child:
+            _controller.value.isInitialized
+                ? Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: VideoPlayer(_controller),
+                    ),
+                    if (!_isPlaying)
+                      const Icon(
+                        Icons.play_arrow_rounded,
+                        size: 80,
+                        color: Colors.white70,
+                      ),
+                  ],
+                )
+                : const Center(
+                  child: CircularProgressIndicator(color: Colors.white70),
+                ),
+      ),
     );
   }
 }

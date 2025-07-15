@@ -24,61 +24,18 @@ class _DeviceVideoGalleryScreenState extends State<DeviceVideoGalleryScreen> {
     _fetchVideos();
   }
 
-  Future<void> checkPermissions() async {
-    if (await Permission.videos.request().isGranted) {
-      // Permission granted
-    } else {
-      openAppSettings(); // Or handle retry
-    }
-  }
-
   Future<void> _fetchVideos() async {
-    checkPermissions();
     setState(() {
       isLoading = true;
       errorMessage = null;
     });
 
-    // Request permissions
     final PermissionState permissionState =
         await PhotoManager.requestPermissionExtend();
 
     if (!mounted) return;
-    print('Permission state: $permissionState');
-    if (permissionState.isAuth) {
-      try {
-        // Fetch all video assets from all albums
-        List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(
-          type: RequestType.video,
-        );
-        List<AssetEntity> allVideos = [];
 
-        for (var path in paths) {
-          final videoList = await path.getAssetListPaged(page: 0, size: 50);
-          allVideos.addAll(videoList);
-        }
-
-        if (!mounted) return;
-
-        setState(() {
-          videos = allVideos;
-          isLoading = false;
-        });
-      } catch (e) {
-        if (!mounted) return;
-        setState(() {
-          errorMessage = 'Failed to load videos: $e';
-          isLoading = false;
-        });
-      }
-    } else if (permissionState == PermissionState.limited) {
-      // Handle limited access (iOS-specific, e.g., user selected specific photos)
-      setState(() {
-        isLoading = false;
-        errorMessage =
-            'Limited access granted. Some videos may not be available.';
-      });
-      // Optionally, still try to fetch available videos
+    if (await Permission.videos.request().isGranted) {
       try {
         List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(
           type: RequestType.video,
@@ -93,159 +50,166 @@ class _DeviceVideoGalleryScreenState extends State<DeviceVideoGalleryScreen> {
           videos = allVideos;
           isLoading = false;
         });
+
+        /// 👇 Show the bottom sheet once loading is complete
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _showBottomSheet(context);
+        });
       } catch (e) {
-        if (!mounted) return;
         setState(() {
           errorMessage = 'Failed to load videos: $e';
           isLoading = false;
         });
       }
     } else {
-      // Permission denied
-      if (!mounted) return;
       setState(() {
         isLoading = false;
-        errorMessage =
-            'Permission denied. Please grant access to media in settings.';
+        errorMessage = 'Permission denied. Please grant access in settings.';
       });
-
-      // Show dialog to guide user
-      await showDialog(
-        context: context,
-        builder:
-            (context) => AlertDialog(
-              title: const Text('Permission Required'),
-              content: const Text(
-                'Please grant media access in your device settings to view videos.',
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    Navigator.pop(context);
-                    await PhotoManager.openSetting();
-                    // Recheck permissions after returning from settings
-                    if (!mounted) return;
-                    await _fetchVideos();
-                  },
-                  child: const Text('Open Settings'),
-                ),
-              ],
-            ),
-      );
+      await PhotoManager.openSetting();
     }
+  }
+
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      backgroundColor: Colors.black,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      context: context,
+      builder:
+          (context) => DraggableScrollableSheet(
+            initialChildSize: 0.5,
+            minChildSize: 0.3,
+            maxChildSize: 0.7,
+            expand: false,
+            builder: (context, scrollController) {
+              return Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    child: Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {},
+                          child: const Text('Open Video Camera'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child:
+                        videos.isEmpty
+                            ? const Center(
+                              child: Text(
+                                'No videos found',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            )
+                            : GridView.builder(
+                              controller: scrollController,
+                              padding: const EdgeInsets.all(8),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    crossAxisSpacing: 8,
+                                    mainAxisSpacing: 8,
+                                  ),
+                              itemCount: videos.length,
+                              itemBuilder: (context, index) {
+                                final video = videos[index];
+                                return FutureBuilder<Uint8List?>(
+                                  future: video.thumbnailDataWithSize(
+                                    const ThumbnailSize(200, 200),
+                                  ),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                            ConnectionState.done &&
+                                        snapshot.hasData &&
+                                        snapshot.data != null) {
+                                      return GestureDetector(
+                                        onTap: () async {
+                                          final file = await video.file;
+                                          if (file != null) {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (_) => ConfirmScreen(
+                                                      videoFile: file,
+                                                      videoPath: file.path,
+                                                    ),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          child: Image.memory(
+                                            snapshot.data!,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                    return Container(
+                                      color: Colors.grey[800],
+                                      child: const Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                  ),
+                ],
+              );
+            },
+          ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // Calculate dynamic thumbnail size based on screen width
-    final double thumbnailSize = MediaQuery.of(context).size.width / 3 - 16;
-
     return Scaffold(
-      appBar: AppBar(title: const Text('Device Videos')),
       backgroundColor: Colors.black,
-      body:
-          isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : errorMessage != null
-              ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+      appBar: AppBar(
+        title: const Text('Pick a Video'),
+        backgroundColor: Colors.black,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.folder_open),
+            onPressed: () => _showBottomSheet(context),
+          ),
+        ],
+      ),
+      body: Center(
+        child:
+            isLoading
+                ? const CircularProgressIndicator()
+                : Column(
                   children: [
                     Text(
-                      errorMessage!,
-                      style: const TextStyle(color: Colors.white),
+                      'Pick Your Video',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: _fetchVideos,
-                      child: const Text('Retry'),
+                    SizedBox(height: 8),
+                    Text(
+                      'The best app to receive and engage your content creatively.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
                     ),
                   ],
                 ),
-              )
-              : videos.isEmpty
-              ? const Center(
-                child: Text(
-                  'No videos found',
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
-              : GridView.builder(
-                padding: const EdgeInsets.all(8),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                ),
-                itemCount: videos.length,
-                itemBuilder: (context, index) {
-                  final video = videos[index];
-
-                  return FutureBuilder<Uint8List?>(
-                    future: video.thumbnailDataWithSize(
-                      ThumbnailSize(
-                        thumbnailSize.toInt(),
-                        thumbnailSize.toInt(),
-                      ),
-                    ),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done &&
-                          snapshot.hasData &&
-                          snapshot.data != null) {
-                        return GestureDetector(
-                          onTap: () async {
-                            try {
-                              final File? file = await video.file;
-                              if (file != null && mounted) {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => ConfirmScreen(
-                                          videoFile: file,
-                                          videoPath: file.path,
-                                        ),
-                                  ),
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Failed to load video'),
-                                  ),
-                                );
-                              }
-                            } catch (e) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Error: $e')),
-                              );
-                            }
-                          },
-                          child: Image.memory(
-                            snapshot.data!,
-                            fit: BoxFit.cover,
-                            errorBuilder:
-                                (context, error, stackTrace) => Container(
-                                  color: Colors.grey[900],
-                                  child: const Icon(
-                                    Icons.error,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                          ),
-                        );
-                      }
-
-                      return Container(
-                        color: Colors.grey[900],
-                        child: const Center(child: CircularProgressIndicator()),
-                      );
-                    },
-                  );
-                },
-              ),
+      ),
     );
   }
 }

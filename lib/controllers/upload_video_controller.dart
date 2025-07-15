@@ -12,6 +12,8 @@ import 'package:uuid/uuid.dart';
 import 'package:video_compress/video_compress.dart';
 
 class UploadVideoController extends GetxController {
+  RxDouble uploadProgress = 0.0.obs;
+  RxBool isUploading = false.obs;
   RxString status = "".obs;
   var cloudinary = Cloudinary.fromStringUrl(
     'cloudinary://132994723556147:aVSUhDoUYleignd1YjqvyQAmrLg@dtn3mnyya',
@@ -35,22 +37,27 @@ class UploadVideoController extends GetxController {
 
   Future<String?> _uploadVideoToCloudinary(File file) async {
     try {
-      Map options = {};
+      isUploading.value = true;
+      uploadProgress.value = 0.0;
+
       var response = await cloudinary.uploader().upload(
         file,
-
-        progressCallback: (val, le) {
-          print("the $val, and the $le");
+        progressCallback: (sent, total) {
+          uploadProgress.value = sent / total;
         },
         params: UploadParams(resourceType: 'video'),
       );
-      print('Cloudinary response: ${response?.data?.url}');
+
+      isUploading.value = false;
       return response?.data?.url;
     } catch (e) {
+      isUploading.value = false;
       print('Cloudinary upload error: $e');
       return null;
     }
   }
+
+  // Same for _uploadFileToCloudinary if you want thumbnail progress
 
   Future<String?> _uploadFileToCloudinary(File file) async {
     try {
@@ -80,11 +87,9 @@ class UploadVideoController extends GetxController {
       String videoId = Uuid().v4();
       DocumentSnapshot userDoc =
           await _firestore.collection('users').doc(uid).get();
-      // var allDocs = await _firestore.collection('videos').get();
-      // int len = allDocs.docs.length;
-      // // String videoId = "Video $len";
-      File compressedVideo = await _compressVideo(videoPath);
-      String? videoUrl = await _uploadVideoToCloudinary(compressedVideo);
+
+      // File compressedVideo = await _compressVideo(videoPath);
+      String? videoUrl = await _uploadVideoToCloudinary(videoFile);
       File thumbnailFile = await _getThumbnail(videoPath);
       String? thumbnailUrl = await _uploadFileToCloudinary(thumbnailFile);
 
