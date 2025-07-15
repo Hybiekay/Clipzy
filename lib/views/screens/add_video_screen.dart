@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:clipzy/views/screens/confirm_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class DeviceVideoGalleryScreen extends StatefulWidget {
   const DeviceVideoGalleryScreen({Key? key}) : super(key: key);
@@ -23,7 +24,16 @@ class _DeviceVideoGalleryScreenState extends State<DeviceVideoGalleryScreen> {
     _fetchVideos();
   }
 
+  Future<void> checkPermissions() async {
+    if (await Permission.videos.request().isGranted) {
+      // Permission granted
+    } else {
+      openAppSettings(); // Or handle retry
+    }
+  }
+
   Future<void> _fetchVideos() async {
+    checkPermissions();
     setState(() {
       isLoading = true;
       errorMessage = null;
@@ -34,7 +44,7 @@ class _DeviceVideoGalleryScreenState extends State<DeviceVideoGalleryScreen> {
         await PhotoManager.requestPermissionExtend();
 
     if (!mounted) return;
-
+    print('Permission state: $permissionState');
     if (permissionState.isAuth) {
       try {
         // Fetch all video assets from all albums
@@ -55,17 +65,77 @@ class _DeviceVideoGalleryScreenState extends State<DeviceVideoGalleryScreen> {
           isLoading = false;
         });
       } catch (e) {
+        if (!mounted) return;
+        setState(() {
+          errorMessage = 'Failed to load videos: $e';
+          isLoading = false;
+        });
+      }
+    } else if (permissionState == PermissionState.limited) {
+      // Handle limited access (iOS-specific, e.g., user selected specific photos)
+      setState(() {
+        isLoading = false;
+        errorMessage =
+            'Limited access granted. Some videos may not be available.';
+      });
+      // Optionally, still try to fetch available videos
+      try {
+        List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(
+          type: RequestType.video,
+        );
+        List<AssetEntity> allVideos = [];
+        for (var path in paths) {
+          final videoList = await path.getAssetListPaged(page: 0, size: 50);
+          allVideos.addAll(videoList);
+        }
+        if (!mounted) return;
+        setState(() {
+          videos = allVideos;
+          isLoading = false;
+        });
+      } catch (e) {
+        if (!mounted) return;
         setState(() {
           errorMessage = 'Failed to load videos: $e';
           isLoading = false;
         });
       }
     } else {
+      // Permission denied
+      if (!mounted) return;
       setState(() {
         isLoading = false;
-        errorMessage = 'Permission denied. Please grant access to media.';
+        errorMessage =
+            'Permission denied. Please grant access to media in settings.';
       });
-      await PhotoManager.openSetting();
+
+      // Show dialog to guide user
+      await showDialog(
+        context: context,
+        builder:
+            (context) => AlertDialog(
+              title: const Text('Permission Required'),
+              content: const Text(
+                'Please grant media access in your device settings to view videos.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    await PhotoManager.openSetting();
+                    // Recheck permissions after returning from settings
+                    if (!mounted) return;
+                    await _fetchVideos();
+                  },
+                  child: const Text('Open Settings'),
+                ),
+              ],
+            ),
+      );
     }
   }
 
