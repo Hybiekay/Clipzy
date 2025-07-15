@@ -18,24 +18,33 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
   @override
   void initState() {
     super.initState();
-    _initializeCachedVideo();
+    _loadCachedVideo();
   }
 
-  Future<void> _initializeCachedVideo() async {
+  Future<void> _loadCachedVideo() async {
+    final url = widget.videoUrl.replaceAll("http://", "https://");
+    final cacheManager = DefaultCacheManager();
+
     try {
-      final httpsUrl = widget.videoUrl.replaceAll("http://", "https://");
-      final fileInfo = await DefaultCacheManager().getSingleFile(httpsUrl);
-      _controller = VideoPlayerController.file(fileInfo)
-        ..initialize().then((_) {
-          setState(() {
-            _isInitialized = true;
-            _controller.play();
-            _controller.setLooping(true);
-            _controller.setVolume(1);
-          });
-        });
+      // Check if file is already cached
+      final fileInfo = await cacheManager.getFileFromCache(url);
+      if (fileInfo != null && fileInfo.file.existsSync()) {
+        // Use cached file
+        _controller = VideoPlayerController.file(fileInfo.file);
+      } else {
+        // Fallback to network
+        _controller = VideoPlayerController.network(url);
+      }
+
+      await _controller.initialize();
+      setState(() {
+        _isInitialized = true;
+        _controller.play();
+        _controller.setLooping(true);
+        _controller.setVolume(1);
+      });
     } catch (e) {
-      print("Error caching video: $e");
+      print("Video loading error: $e");
     }
   }
 
