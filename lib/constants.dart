@@ -11,7 +11,8 @@ import 'package:clipzy/views/screens/video_screen.dart';
 List pages = [
   VideoScreen(),
   SearchScreen(),
-  const AddVideoScreen(),
+  // const AddVideoScreen(),
+  DeviceVideoGalleryScreen(),
   Text('Messages Screen'),
   ProfileScreen(uid: authController.user.uid),
 ];

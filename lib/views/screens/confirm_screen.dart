@@ -8,6 +8,7 @@ import 'package:video_player/video_player.dart';
 class ConfirmScreen extends StatefulWidget {
   final File videoFile;
   final String videoPath;
+
   const ConfirmScreen({
     super.key,
     required this.videoFile,
@@ -19,88 +20,100 @@ class ConfirmScreen extends StatefulWidget {
 }
 
 class _ConfirmScreenState extends State<ConfirmScreen> {
-  late VideoPlayerController controller;
+  late VideoPlayerController _controller;
   final TextEditingController _songController = TextEditingController();
   final TextEditingController _captionController = TextEditingController();
 
-  UploadVideoController uploadVideoController = Get.put(
+  final UploadVideoController _uploadVideoController = Get.put(
     UploadVideoController(),
   );
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      controller = VideoPlayerController.file(widget.videoFile);
-    });
-    controller.initialize();
-    controller.play();
-    controller.setVolume(1);
-    controller.setLooping(true);
+    _controller = VideoPlayerController.file(widget.videoFile)
+      ..initialize().then((_) {
+        setState(() {}); // Refresh once video is initialized
+        _controller.play();
+        _controller.setVolume(1);
+        _controller.setLooping(true);
+      });
   }
 
   @override
   void dispose() {
+    _controller.dispose();
     super.dispose();
-    controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 30),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 1.5,
-              child: VideoPlayer(controller),
-            ),
-            const SizedBox(height: 30),
-            SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    width: MediaQuery.of(context).size.width - 20,
-                    child: TextInputField(
-                      controller: _songController,
-                      labelText: 'Song Name',
-                      icon: Icons.music_note,
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                _controller.value.isInitialized
+                    ? AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: VideoPlayer(_controller),
+                    )
+                    : const CircularProgressIndicator(color: Colors.white),
+                const SizedBox(height: 24),
+                TextInputField(
+                  controller: _songController,
+                  labelText: 'Song Name',
+                  icon: Icons.music_note,
+                ),
+                const SizedBox(height: 16),
+                TextInputField(
+                  controller: _captionController,
+                  labelText: 'Caption',
+                  icon: Icons.closed_caption,
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_songController.text.isEmpty ||
+                          _captionController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Please fill in all fields'),
+                          ),
+                        );
+                        return;
+                      }
+                      _uploadVideoController.uploadVideo(
+                        _songController.text.trim(),
+                        _captionController.text.trim(),
+                        widget.videoPath,
+                        widget.videoFile,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.redAccent,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    width: MediaQuery.of(context).size.width - 20,
-                    child: TextInputField(
-                      controller: _captionController,
-                      labelText: 'Caption',
-                      icon: Icons.closed_caption,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed:
-                        () => uploadVideoController.uploadVideo(
-                          _songController.text,
-                          _captionController.text,
-
-                          widget.videoPath,
-                          widget.videoFile,
-                        ),
                     child: const Text(
                       'Share!',
-                      style: TextStyle(fontSize: 20, color: Colors.white),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
