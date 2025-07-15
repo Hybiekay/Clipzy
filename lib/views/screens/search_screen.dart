@@ -15,15 +15,28 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       return Scaffold(
+        backgroundColor: Colors.black,
         appBar: AppBar(
-          backgroundColor: Colors.red,
-          title: TextFormField(
-            decoration: const InputDecoration(
-              filled: false,
-              hintText: 'Search',
-              hintStyle: TextStyle(fontSize: 18, color: Colors.white),
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.black.withOpacity(0.5),
+          elevation: 0,
+          title: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: Colors.white10,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.white24),
             ),
-            onFieldSubmitted: (value) => searchController.searchUser(value),
+            child: TextFormField(
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(
+                icon: Icon(Icons.search, color: Colors.white54),
+                hintText: 'Search users',
+                hintStyle: TextStyle(color: Colors.white54),
+                border: InputBorder.none,
+              ),
+              onFieldSubmitted: (value) => searchController.searchUser(value),
+            ),
           ),
         ),
         body:
@@ -32,35 +45,47 @@ class SearchScreen extends StatelessWidget {
                   child: Text(
                     'Search for users!',
                     style: TextStyle(
-                      fontSize: 25,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                      color: Colors.white70,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 )
-                : ListView.builder(
+                : ListView.separated(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   itemCount: searchController.searchedUsers.length,
+                  separatorBuilder:
+                      (context, index) => Divider(
+                        color: Colors.white10,
+                        indent: 16,
+                        endIndent: 16,
+                      ),
                   itemBuilder: (context, index) {
                     User user = searchController.searchedUsers[index];
-                    return InkWell(
-                      onTap:
-                          () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => ProfileScreen(uid: user.uid),
-                            ),
+                    return ListTile(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => ProfileScreen(uid: user.uid),
                           ),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage: NetworkImage(user.profilePhoto),
+                        );
+                      },
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(user.profilePhoto),
+                        radius: 24,
+                      ),
+                      title: Text(
+                        user.name,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
-                        title: Text(
-                          user.name,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
-                        ),
+                      ),
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: Colors.white54,
                       ),
                     );
                   },

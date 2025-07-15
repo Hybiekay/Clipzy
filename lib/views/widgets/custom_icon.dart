@@ -6,35 +6,43 @@ class CustomIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 45,
-      height: 30,
+      width: 40,
+      height: 40,
       child: Stack(
         children: [
-          Container(
-            margin: const EdgeInsets.only(left: 10),
-            width: 38,
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 250, 45, 108),
-              borderRadius: BorderRadius.circular(7),
+          Positioned(
+            left: 6,
+            top: 5,
+            bottom: 5,
+            child: Container(
+              width: 28,
+              decoration: BoxDecoration(
+                color: Colors.purple,
+                borderRadius: BorderRadius.circular(7),
+              ),
             ),
           ),
-          Container(
-            margin: const EdgeInsets.only(right: 10),
-            width: 38,
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 32, 211, 234),
-              borderRadius: BorderRadius.circular(7),
-            ),
-          ),
+          // Positioned(
+          //   right: 6,
+          //   top: 5,
+          //   bottom: 5,
+          //   child: Container(
+          //     width: 28,
+          //     decoration: BoxDecoration(
+          //       color: const Color.fromARGB(255, 32, 211, 234),
+          //       borderRadius: BorderRadius.circular(7),
+          //     ),
+          //   ),
+          // ),
           Center(
             child: Container(
-              height: double.infinity,
+              height: 38,
               width: 38,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(7),
               ),
-              child: const Icon(Icons.add, color: Colors.black, size: 20),
+              child: const Icon(Icons.add, color: Colors.black, size: 22),
             ),
           ),
         ],

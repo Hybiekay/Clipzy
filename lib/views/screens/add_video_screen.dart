@@ -9,12 +9,8 @@ class AddVideoScreen extends StatelessWidget {
   const AddVideoScreen({super.key});
 
   pickVideo(ImageSource src, BuildContext context) async {
-    print("I want to file file");
     final video = await ImagePicker().pickVideo(source: src);
-    print("am done piking file");
-
     if (video != null) {
-      print("file is not null");
       Navigator.of(context).push(
         MaterialPageRoute(
           builder:
@@ -25,7 +21,7 @@ class AddVideoScreen extends StatelessWidget {
         ),
       );
     } else {
-      print("you pick nooting");
+      print("you pick noting");
     }
   }
 

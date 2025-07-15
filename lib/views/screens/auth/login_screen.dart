@@ -11,89 +11,129 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Tiktok Clone',
-              style: TextStyle(
-                fontSize: 35,
-                color: buttonColor,
-                fontWeight: FontWeight.w900,
-              ),
+      body: Stack(
+        children: [
+          // Background Image (replace with video if needed)
+          SizedBox(
+            height: size.height,
+            width: size.width,
+            child: Image.asset(
+              'assets/images/login_bg.jpg', // Add a cool image here
+              fit: BoxFit.cover,
             ),
-            const Text(
-              'Login',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 25),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextInputField(
-                controller: _emailController,
-                labelText: 'Email',
-                icon: Icons.email,
-              ),
-            ),
-            const SizedBox(height: 25),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextInputField(
-                controller: _passwordController,
-                labelText: 'Password',
-                icon: Icons.lock,
-                isObscure: true,
-              ),
-            ),
-            const SizedBox(height: 30),
-            Container(
-              width: MediaQuery.of(context).size.width - 40,
-              height: 50,
-              decoration: BoxDecoration(
-                color: buttonColor,
-                borderRadius: const BorderRadius.all(Radius.circular(5)),
-              ),
-              child: InkWell(
-                onTap:
-                    () => authController.loginUser(
-                      _emailController.text,
-                      _passwordController.text,
-                    ),
-                child: const Center(
-                  child: Text(
-                    'Login',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                  ),
+          ),
+
+          // Glass container
+          Container(
+            alignment: Alignment.center,
+            child: SingleChildScrollView(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white24),
                 ),
-              ),
-            ),
-            const SizedBox(height: 15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'Don\'t have an account? ',
-                  style: TextStyle(fontSize: 20),
-                ),
-                InkWell(
-                  onTap:
-                      () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => SignupScreen()),
+                child: Column(
+                  children: [
+                    Text(
+                      'Clipzy',
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 2,
                       ),
-                  child: Text(
-                    'Register',
-                    style: TextStyle(fontSize: 20, color: buttonColor),
-                  ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Create. Inspire. Go Viral.',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white70,
+                      ),
+                    ),
+                    const SizedBox(height: 25),
+
+                    TextInputField(
+                      controller: _emailController,
+                      labelText: 'Email',
+                      icon: Icons.email,
+                    ),
+                    const SizedBox(height: 20),
+
+                    TextInputField(
+                      controller: _passwordController,
+                      labelText: 'Password',
+                      icon: Icons.lock,
+                      isObscure: true,
+                    ),
+                    const SizedBox(height: 30),
+
+                    Container(
+                      width: double.infinity,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [buttonColor, buttonColor.withOpacity(0.7)],
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: InkWell(
+                        onTap:
+                            () => authController.loginUser(
+                              _emailController.text,
+                              _passwordController.text,
+                            ),
+                        child: const Center(
+                          child: Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Don\'t have an account? ',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        GestureDetector(
+                          onTap:
+                              () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => SignupScreen(),
+                                ),
+                              ),
+                          child: Text(
+                            'Register',
+                            style: TextStyle(
+                              color: buttonColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

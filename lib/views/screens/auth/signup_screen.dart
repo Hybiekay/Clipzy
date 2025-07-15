@@ -13,135 +13,171 @@ class SignupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Tiktok Clone',
-                style: TextStyle(
-                  fontSize: 35,
-                  color: buttonColor,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              const Text(
-                'Register',
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 25),
-              Stack(
-                children: [
-                  Obx(() {
-                    final photo = authController.profilePhoto;
-                    return CircleAvatar(
-                      radius: 64,
-                      backgroundImage:
-                          photo != null
-                              ? FileImage(photo)
-                              : const NetworkImage(
-                                    'https://www.pngitem.com/pimgs/m/150-1503945_transparent-user-png-default-user-image-png-png.png',
-                                  )
-                                  as ImageProvider,
-                      backgroundColor: Colors.black,
-                    );
-                  }),
-                  Positioned(
-                    bottom: -10,
-                    left: 80,
-                    child: IconButton(
-                      onPressed: () => authController.pickImage(),
-                      icon: const Icon(Icons.add_a_photo),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 15),
-              Container(
-                width: MediaQuery.of(context).size.width,
+      body: Stack(
+        children: [
+          // Background Image (use a relevant signup background)
+          SizedBox(
+            height: size.height,
+            width: size.width,
+            child: Image.asset(
+              'assets/images/signup_bg.jpg', // Add a cool image here
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          // Glass effect container
+          Container(
+            alignment: Alignment.center,
+            child: SingleChildScrollView(
+              child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20),
-                child: TextInputField(
-                  controller: _usernameController,
-                  labelText: 'Username',
-                  icon: Icons.person,
-                ),
-              ),
-              const SizedBox(height: 15),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                child: TextInputField(
-                  controller: _emailController,
-                  labelText: 'Email',
-                  icon: Icons.email,
-                ),
-              ),
-              const SizedBox(height: 15),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                child: TextInputField(
-                  controller: _passwordController,
-                  labelText: 'Password',
-                  icon: Icons.lock,
-                  isObscure: true,
-                ),
-              ),
-              const SizedBox(height: 30),
-              Container(
-                width: MediaQuery.of(context).size.width - 40,
-                height: 50,
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: buttonColor,
-                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                  color: Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white24),
                 ),
-                child: InkWell(
-                  onTap:
-                      () => authController.registerUser(
-                        _usernameController.text.trim(),
-                        _emailController.text.trim(),
-                        _passwordController.text.trim(),
-                        authController.profilePhoto,
-                      ),
-                  child: const Center(
-                    child: Text(
-                      'Register',
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Clipzy',
                       style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 2,
                       ),
                     ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Already have an account? ',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  InkWell(
-                    onTap:
-                        () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => LoginScreen(),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Join the community. Start creating!',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white70,
+                      ),
+                    ),
+                    const SizedBox(height: 25),
+
+                    // Profile photo picker
+                    Stack(
+                      children: [
+                        Obx(() {
+                          final photo = authController.profilePhoto;
+                          return CircleAvatar(
+                            radius: 64,
+                            backgroundImage:
+                                photo != null
+                                    ? FileImage(photo)
+                                    : const NetworkImage(
+                                          'https://www.pngitem.com/pimgs/m/150-1503945_transparent-user-png-default-user-image-png-png.png',
+                                        )
+                                        as ImageProvider,
+                            backgroundColor: Colors.black,
+                          );
+                        }),
+                        Positioned(
+                          bottom: -10,
+                          left: 80,
+                          child: IconButton(
+                            onPressed: () => authController.pickImage(),
+                            icon: const Icon(
+                              Icons.add_a_photo,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                    child: Text(
-                      'Login',
-                      style: TextStyle(fontSize: 20, color: buttonColor),
+                      ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 20),
+
+                    TextInputField(
+                      controller: _usernameController,
+                      labelText: 'Username',
+                      icon: Icons.person,
+                    ),
+                    const SizedBox(height: 15),
+
+                    TextInputField(
+                      controller: _emailController,
+                      labelText: 'Email',
+                      icon: Icons.email,
+                    ),
+                    const SizedBox(height: 15),
+
+                    TextInputField(
+                      controller: _passwordController,
+                      labelText: 'Password',
+                      icon: Icons.lock,
+                      isObscure: true,
+                    ),
+                    const SizedBox(height: 30),
+
+                    Container(
+                      width: double.infinity,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [buttonColor, buttonColor.withOpacity(0.7)],
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: InkWell(
+                        onTap:
+                            () => authController.registerUser(
+                              _usernameController.text.trim(),
+                              _emailController.text.trim(),
+                              _passwordController.text.trim(),
+                              authController.profilePhoto,
+                            ),
+                        child: const Center(
+                          child: Text(
+                            'Register',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Already have an account? ',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        GestureDetector(
+                          onTap:
+                              () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => LoginScreen(),
+                                ),
+                              ),
+                          child: Text(
+                            'Login',
+                            style: TextStyle(
+                              color: buttonColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

@@ -16,22 +16,27 @@ class TextInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: labelText,
-        prefix: Icon(icon),
-        labelStyle: TextStyle(fontSize: 20),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: BorderSide(color: borderColor),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(labelText),
+        TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            prefixIcon: Icon(icon),
+            labelStyle: TextStyle(fontSize: 20),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide(color: borderColor),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide(color: borderColor),
+            ),
+          ),
+          obscureText: isObscure,
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: BorderSide(color: borderColor),
-        ),
-      ),
-      obscureText: isObscure,
+      ],
     );
   }
 }

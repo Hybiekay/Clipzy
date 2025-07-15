@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'TikTok Clone',
+      title: 'ClipZy',
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: backgroundColor,
       ),

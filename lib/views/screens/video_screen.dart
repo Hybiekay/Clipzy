@@ -159,7 +159,7 @@ class VideoScreen extends StatelessWidget {
                                             data.likes.contains(
                                                   authController.user.uid,
                                                 )
-                                                ? Colors.red
+                                                ? Colors.purple
                                                 : Colors.white,
                                       ),
                                     ),
