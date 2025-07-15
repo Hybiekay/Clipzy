@@ -178,7 +178,7 @@ class _DeviceVideoGalleryScreenState extends State<DeviceVideoGalleryScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text('Pick a Video'),
+        // title: const Text('Pick a Video'),
         backgroundColor: Colors.black,
         actions: [
           IconButton(
@@ -192,6 +192,7 @@ class _DeviceVideoGalleryScreenState extends State<DeviceVideoGalleryScreen> {
             isLoading
                 ? const CircularProgressIndicator()
                 : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Pick Your Video',

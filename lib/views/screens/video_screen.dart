@@ -6,6 +6,7 @@ import 'package:clipzy/controllers/video_controller.dart';
 import 'package:clipzy/views/screens/comment_screen.dart';
 import 'package:clipzy/views/widgets/circle_animation.dart';
 import 'package:clipzy/views/widgets/video_player_item.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class VideoScreen extends StatelessWidget {
   final VideoController videoController = Get.put(VideoController());
@@ -42,6 +43,18 @@ class VideoScreen extends StatelessWidget {
     );
   }
 
+  Future<void> cacheNextVideos(int currentIndex, List videoList) async {
+    final manager = DefaultCacheManager();
+    for (
+      int i = currentIndex + 1;
+      i <= currentIndex + 5 && i < videoList.length;
+      i++
+    ) {
+      final videoUrl = videoList[i].videoUrl.replaceAll("http://", "https://");
+      await manager.downloadFile(videoUrl);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -55,6 +68,7 @@ class VideoScreen extends StatelessWidget {
           scrollDirection: Axis.vertical,
           itemBuilder: (context, index) {
             final data = videoController.videoList[index];
+            cacheNextVideos(index, videoController.videoList);
 
             return Stack(
               children: [

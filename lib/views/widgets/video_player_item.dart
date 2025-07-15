@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class VideoPlayerItem extends StatefulWidget {
   final String videoUrl;
@@ -12,19 +13,30 @@ class VideoPlayerItem extends StatefulWidget {
 class _VideoPlayerItemState extends State<VideoPlayerItem> {
   late VideoPlayerController _controller;
   bool _isPlaying = true;
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    print("Video URL: ${widget.videoUrl}");
+    _initializeCachedVideo();
+  }
 
-    _controller = VideoPlayerController.network(widget.videoUrl)
-      ..initialize().then((_) {
-        setState(() {});
-        _controller.play();
-        _controller.setLooping(true);
-        _controller.setVolume(1);
-      });
+  Future<void> _initializeCachedVideo() async {
+    try {
+      final httpsUrl = widget.videoUrl.replaceAll("http://", "https://");
+      final fileInfo = await DefaultCacheManager().getSingleFile(httpsUrl);
+      _controller = VideoPlayerController.file(fileInfo)
+        ..initialize().then((_) {
+          setState(() {
+            _isInitialized = true;
+            _controller.play();
+            _controller.setLooping(true);
+            _controller.setVolume(1);
+          });
+        });
+    } catch (e) {
+      print("Error caching video: $e");
+    }
   }
 
   @override
@@ -34,6 +46,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
   }
 
   void _togglePlayback() {
+    if (!_isInitialized) return;
     setState(() {
       if (_controller.value.isPlaying) {
         _controller.pause();
@@ -56,7 +69,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
         height: size.height,
         color: Colors.black,
         child:
-            _controller.value.isInitialized
+            _isInitialized
                 ? Stack(
                   alignment: Alignment.center,
                   children: [

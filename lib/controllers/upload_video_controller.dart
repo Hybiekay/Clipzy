@@ -5,6 +5,7 @@ import 'package:cloudinary_api/uploader/cloudinary_uploader.dart';
 import 'package:cloudinary_api/uploader/uploader_utils.dart';
 import 'package:cloudinary_api/src/request/model/uploader_params.dart';
 import 'package:cloudinary_url_gen/cloudinary.dart';
+import 'package:cloudinary_url_gen/transformation/transformation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:clipzy/models/video.dart';
@@ -45,7 +46,7 @@ class UploadVideoController extends GetxController {
         progressCallback: (sent, total) {
           uploadProgress.value = sent / total;
         },
-        params: UploadParams(resourceType: 'video'),
+        params: UploadParams(resourceType: 'video', format: 'mp4'),
       );
 
       isUploading.value = false;
