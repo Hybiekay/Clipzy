@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:clipzy/core/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:clipzy/constants.dart';
@@ -22,9 +25,19 @@ class SignupScreen extends StatelessWidget {
           SizedBox(
             height: size.height,
             width: size.width,
-            child: Image.asset(
-              'assets/images/signup_bg.jpg', // Add a cool image here
-              fit: BoxFit.cover,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.asset(AppImages.loginBg, fit: BoxFit.cover),
+                BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    color: Colors.black.withOpacity(
+                      0.8,
+                    ), // Required for blur to show
+                  ),
+                ),
+              ],
             ),
           ),
 
@@ -73,9 +86,7 @@ class SignupScreen extends StatelessWidget {
                             backgroundImage:
                                 photo != null
                                     ? FileImage(photo)
-                                    : const NetworkImage(
-                                          'https://www.pngitem.com/pimgs/m/150-1503945_transparent-user-png-default-user-image-png-png.png',
-                                        )
+                                    : const AssetImage(AppImages.placeholder1)
                                         as ImageProvider,
                             backgroundColor: Colors.black,
                           );

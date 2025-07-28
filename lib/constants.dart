@@ -1,3 +1,4 @@
+import 'package:clipzy/views/screens/messages_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -13,7 +14,7 @@ List pages = [
   SearchScreen(),
   // const AddVideoScreen(),
   DeviceVideoGalleryScreen(),
-  Text('Messages Screen'),
+  MessagesScreen(),
   ProfileScreen(uid: authController.user.uid),
 ];
 

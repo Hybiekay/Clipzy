@@ -1,5 +1,7 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:clipzy/constants.dart';
+import 'package:clipzy/core/app_images.dart';
 import 'package:clipzy/views/screens/auth/signup_screen.dart';
 import 'package:clipzy/views/widgets/text_input_field.dart';
 
@@ -16,17 +18,27 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Background Image (replace with video if needed)
+          // Blurred background image
           SizedBox(
             height: size.height,
             width: size.width,
-            child: Image.asset(
-              'assets/images/login_bg.jpg', // Add a cool image here
-              fit: BoxFit.cover,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.asset(AppImages.loginBg, fit: BoxFit.cover),
+                BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    color: Colors.black.withOpacity(
+                      0.8,
+                    ), // Required for blur to show
+                  ),
+                ),
+              ],
             ),
           ),
 
-          // Glass container
+          // Login form (glass container)
           Container(
             alignment: Alignment.center,
             child: SingleChildScrollView(
@@ -55,7 +67,7 @@ class LoginScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
-                        color: Colors.white70,
+                        color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 25),
@@ -96,7 +108,7 @@ class LoginScreen extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                              color: Colors.white24,
                             ),
                           ),
                         ),
