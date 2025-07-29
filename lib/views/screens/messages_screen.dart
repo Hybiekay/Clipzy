@@ -50,7 +50,7 @@ class MessagesScreen extends StatelessWidget {
                     MaterialPageRoute(
                       builder:
                           (_) => ChatDetailScreen(
-                            userName: msg.senderName,
+                            userName: msg.otherUserName,
                             chatId: '',
                             userId: authController.user.uid,
                             receiverId: '',
@@ -75,7 +75,7 @@ class MessagesScreen extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 28,
-                        backgroundImage: NetworkImage(msg.senderAvatarUrl),
+                        backgroundImage: NetworkImage(msg.otherUserImage),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -83,7 +83,7 @@ class MessagesScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              msg.senderName,
+                              msg.otherUserImage,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
@@ -100,7 +100,7 @@ class MessagesScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        msg.lastTimestamp,
+                        msg.lastTimestamp.toString(),
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.grey,
