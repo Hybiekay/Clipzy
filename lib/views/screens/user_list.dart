@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:clipzy/constants.dart';
 import 'package:flutter/material.dart' hide SearchController;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import '../../../controllers/search_controller.dart';
+// ignore: unused_import
 import '../../../models/user.dart';
 import 'chat_detail_screen.dart';
 
@@ -88,7 +90,9 @@ class _UserListScreenState extends State<UserListScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           itemBuilder: (context, index) {
             final user = users[index];
-            if (user.uid == currentUserId) return const SizedBox();
+
+            log(users.length.toString());
+            // if (user.uid == currentUserId) return const SizedBox();
 
             return Card(
               shape: RoundedRectangleBorder(

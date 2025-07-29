@@ -1,3 +1,4 @@
+import 'dart:developer' show log;
 import 'dart:io';
 import 'package:cloudinary_api/uploader/cloudinary_uploader.dart';
 import 'package:cloudinary_url_gen/cloudinary.dart';
@@ -54,7 +55,7 @@ class AuthController extends GetxController {
       var response = await cloudinary.uploader().upload(imageFile);
       return response?.data?.url;
     } catch (e) {
-      print('Cloudinary profile image upload error: $e');
+      log('Cloudinary profile image upload error: $e');
       return null;
     }
   }
@@ -86,7 +87,7 @@ class AuthController extends GetxController {
           name: username,
           email: email,
           uid: cred.user!.uid,
-          profilePhoto: photoUrl,
+          profilePhoto: photoUrl.replaceAll("http:", "https:"),
         );
         await firestore
             .collection('users')

@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'dart:io';
 import 'package:clipzy/views/screens/confirm_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -29,9 +28,6 @@ class _DeviceVideoGalleryScreenState extends State<DeviceVideoGalleryScreen> {
       isLoading = true;
       errorMessage = null;
     });
-
-    final PermissionState permissionState =
-        await PhotoManager.requestPermissionExtend();
 
     if (!mounted) return;
 

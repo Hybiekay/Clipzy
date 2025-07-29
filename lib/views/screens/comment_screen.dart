@@ -6,7 +6,7 @@ import 'package:timeago/timeago.dart' as tago;
 
 class CommentScreen extends StatefulWidget {
   final String id;
-  const CommentScreen({Key? key, required this.id}) : super(key: key);
+  const CommentScreen({super.key, required this.id});
 
   @override
   State<CommentScreen> createState() => _CommentScreenState();

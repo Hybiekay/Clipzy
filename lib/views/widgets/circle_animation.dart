@@ -5,7 +5,7 @@ class CircleAnimation extends StatefulWidget {
   const CircleAnimation({super.key, required this.child});
 
   @override
-  _CircleAnimationState createState() => _CircleAnimationState();
+  State createState() => _CircleAnimationState();
 }
 
 class _CircleAnimationState extends State<CircleAnimation>

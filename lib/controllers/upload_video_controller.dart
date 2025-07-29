@@ -1,11 +1,10 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudinary_api/uploader/cloudinary_uploader.dart';
-import 'package:cloudinary_api/uploader/uploader_utils.dart';
 import 'package:cloudinary_api/src/request/model/uploader_params.dart';
 import 'package:cloudinary_url_gen/cloudinary.dart';
-import 'package:cloudinary_url_gen/transformation/transformation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:clipzy/models/video.dart';
@@ -23,13 +22,13 @@ class UploadVideoController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<File> _compressVideo(String videoPath) async {
-    final compressedVideo = await VideoCompress.compressVideo(
-      videoPath,
-      quality: VideoQuality.MediumQuality,
-    );
-    return compressedVideo!.file!;
-  }
+  // Future<File> _compressVideo(String videoPath) async {
+  //   final compressedVideo = await VideoCompress.compressVideo(
+  //     videoPath,
+  //     quality: VideoQuality.MediumQuality,
+  //   );
+  //   return compressedVideo!.file!;
+  // }
 
   Future<File> _getThumbnail(String videoPath) async {
     final thumbnail = await VideoCompress.getFileThumbnail(videoPath);
@@ -53,7 +52,7 @@ class UploadVideoController extends GetxController {
       return response?.data?.url;
     } catch (e) {
       isUploading.value = false;
-      print('Cloudinary upload error: $e');
+      log('Cloudinary upload error: $e');
       return null;
     }
   }
@@ -66,13 +65,13 @@ class UploadVideoController extends GetxController {
         file,
 
         progressCallback: (val, le) {
-          print("the $val, and the $le");
+          log("the $val, and the $le");
         },
       );
-      print('Cloudinary response: ${response?.data?.url}');
+      log('Cloudinary response: ${response?.data?.url}');
       return response?.data?.url;
     } catch (e) {
-      print('Cloudinary upload error: $e');
+      log('Cloudinary upload error: $e');
       return null;
     }
   }
@@ -113,16 +112,16 @@ class UploadVideoController extends GetxController {
         thumbnail: thumbnailUrl,
       );
 
-      print('Saving video metadata to Firestore...');
+      log('Saving video metadata to Firestore...');
       await _firestore.collection('videos').doc(videoId).set(video.toJson());
-      print('Saved video metadata to Firestore!');
+      log('Saved video metadata to Firestore!');
       Get.back();
       Get.snackbar(
         'Success',
         'Video uploaded to Cloudinary and saved in Firebase!',
       );
     } catch (e) {
-      print('Error saving video: $e');
+      log('Error saving video: $e');
       Get.snackbar('Error Uploading Video', e.toString());
     }
   }

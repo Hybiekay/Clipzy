@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -44,7 +46,7 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
         _controller.setVolume(1);
       });
     } catch (e) {
-      print("Video loading error: $e");
+      log("Video loading error: $e");
     }
   }
 
