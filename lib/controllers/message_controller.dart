@@ -6,10 +6,11 @@ import '../models/message_model.dart';
 class MessageController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Stream<List<MessageModel>> getRecentMessages() {
+  Stream<List<MessageModel>> getUserRecentChats(String userId) {
     return _firestore
-        .collection('messages')
-        .orderBy('timestamp', descending: true)
+        .collection('chats')
+        .where('participants', arrayContains: userId)
+        .orderBy('lastTimestamp', descending: true)
         .snapshots()
         .map((snapshot) {
           return snapshot.docs.map((doc) {

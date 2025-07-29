@@ -26,7 +26,7 @@ class MessagesScreen extends StatelessWidget {
         foregroundColor: Colors.black,
       ),
       body: StreamBuilder<List<MessageModel>>(
-        stream: _controller.getRecentMessages(),
+        stream: _controller.getUserRecentChats(authController.user.uid),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -100,7 +100,7 @@ class MessagesScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        msg.timestamp,
+                        msg.lastTimestamp,
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.grey,

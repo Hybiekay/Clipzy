@@ -32,7 +32,6 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     if (text.isEmpty) return;
 
     _controller.sendMessage(
-      chatId: widget.chatId,
       senderId: widget.userId,
       receiverId: widget.receiverId,
       text: text,

@@ -4,14 +4,14 @@ class MessageModel {
   final String id;
   final String senderName;
   final String lastMessage;
-  final String timestamp;
+  final String lastTimestamp;
   final String senderAvatarUrl;
 
   MessageModel({
     required this.id,
     required this.senderName,
     required this.lastMessage,
-    required this.timestamp,
+    required this.lastTimestamp,
     required this.senderAvatarUrl,
   });
 
@@ -20,7 +20,7 @@ class MessageModel {
       id: docId,
       senderName: data['senderName'] ?? '',
       lastMessage: data['lastMessage'] ?? '',
-      timestamp: data['timestamp'] ?? '',
+      lastTimestamp: data['lastTimestamp'] ?? '',
       senderAvatarUrl: data['senderAvatarUrl'] ?? '',
     );
   }
