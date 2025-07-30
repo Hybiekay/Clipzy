@@ -57,7 +57,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBlNAag1IWeZLdnvLAMN3H7WKx1X0nKteg',
-    appId: '1:197147642320:android:f1d4c41170394651bfd1d5',
+    appId: '1:197147642320:android:0d42f647e8b54ea6bfd1d5',
     messagingSenderId: '197147642320',
     projectId: 'tictok-27c2b',
     storageBucket: 'tictok-27c2b.firebasestorage.app',
@@ -65,11 +65,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBDZtbPyv9DKSVMKBACkDWi5wceW4o37O4',
-    appId: '1:197147642320:ios:94971a28c88419a8bfd1d5',
+    appId: '1:197147642320:ios:b231ef7678d8d061bfd1d5',
     messagingSenderId: '197147642320',
     projectId: 'tictok-27c2b',
     storageBucket: 'tictok-27c2b.firebasestorage.app',
-    iosBundleId: 'com.example.tiktokClone',
+    iosBundleId: 'com.charis.clipzy',
   );
 
 }

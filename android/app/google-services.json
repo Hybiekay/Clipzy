@@ -7,9 +7,47 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:197147642320:android:f1d4c41170394651bfd1d5",
+        "mobilesdk_app_id": "1:197147642320:android:0d42f647e8b54ea6bfd1d5",
+        "android_client_info": {
+          "package_name": "com.charis.clipzy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlNAag1IWeZLdnvLAMN3H7WKx1X0nKteg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:197147642320:android:5e8415b34b58f292bfd1d5",
         "android_client_info": {
           "package_name": "com.example.clipzy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlNAag1IWeZLdnvLAMN3H7WKx1X0nKteg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:197147642320:android:f1d4c41170394651bfd1d5",
+        "android_client_info": {
+          "package_name": "com.example.tiktok_clone"
         }
       },
       "oauth_client": [],

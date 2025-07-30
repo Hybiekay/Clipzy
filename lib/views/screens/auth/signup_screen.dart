@@ -128,35 +128,42 @@ class SignupScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 30),
 
-                    Container(
-                      width: double.infinity,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [buttonColor, buttonColor.withOpacity(0.7)],
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: InkWell(
-                        onTap:
-                            () => authController.registerUser(
-                              _usernameController.text.trim(),
-                              _emailController.text.trim(),
-                              _passwordController.text.trim(),
-                              authController.profilePhoto,
+                    Obx(() {
+                      return authController.isLoading.value
+                          ? CircularProgressIndicator()
+                          : Container(
+                            width: double.infinity,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  buttonColor,
+                                  buttonColor.withOpacity(0.7),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                        child: const Center(
-                          child: Text(
-                            'Register',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                            child: InkWell(
+                              onTap:
+                                  () => authController.registerUser(
+                                    _usernameController.text.trim(),
+                                    _emailController.text.trim(),
+                                    _passwordController.text.trim(),
+                                    authController.profilePhoto,
+                                  ),
+                              child: const Center(
+                                child: Text(
+                                  'Register',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                    ),
+                          );
+                    }),
                     const SizedBox(height: 20),
 
                     Row(

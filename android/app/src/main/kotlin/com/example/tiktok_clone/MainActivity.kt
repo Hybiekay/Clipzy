@@ -1,4 +1,4 @@
-package com.example.clipzy
+package com.charis.clipzy
 
 import io.flutter.embedding.android.FlutterActivity
 

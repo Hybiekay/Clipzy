@@ -5,7 +5,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class DeviceVideoGalleryScreen extends StatefulWidget {
-  const DeviceVideoGalleryScreen({Key? key}) : super(key: key);
+  const DeviceVideoGalleryScreen({super.key});
 
   @override
   State<DeviceVideoGalleryScreen> createState() =>

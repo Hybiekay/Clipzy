@@ -4,6 +4,7 @@ import 'package:clipzy/constants.dart';
 import 'package:clipzy/core/app_images.dart';
 import 'package:clipzy/views/screens/auth/signup_screen.dart';
 import 'package:clipzy/views/widgets/text_input_field.dart';
+import 'package:get/get.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -87,33 +88,40 @@ class LoginScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 30),
 
-                    Container(
-                      width: double.infinity,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [buttonColor, buttonColor.withOpacity(0.7)],
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: InkWell(
-                        onTap:
-                            () => authController.loginUser(
-                              _emailController.text,
-                              _passwordController.text,
+                    Obx(() {
+                      return authController.isLoading.value
+                          ? CircularProgressIndicator()
+                          : Container(
+                            width: double.infinity,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  buttonColor,
+                                  buttonColor.withOpacity(0.7),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                        child: const Center(
-                          child: Text(
-                            'Login',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white24,
+                            child: InkWell(
+                              onTap:
+                                  () => authController.loginUser(
+                                    _emailController.text,
+                                    _passwordController.text,
+                                  ),
+                              child: const Center(
+                                child: Text(
+                                  'Login',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white24,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                    ),
+                          );
+                    }),
                     const SizedBox(height: 20),
 
                     Row(

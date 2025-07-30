@@ -14,6 +14,7 @@ class AuthController extends GetxController {
   static AuthController instance = Get.find();
   late Rx<User?> _user;
   final Rx<File?> _pickedImage = Rx<File?>(null);
+  RxBool isLoading = false.obs; // Add this
 
   File? get profilePhoto => _pickedImage.value;
   User get user => _user.value!;
@@ -61,7 +62,7 @@ class AuthController extends GetxController {
   }
 
   // registering the user
-  void registerUser(
+  Future<void> registerUser(
     String username,
     String email,
     String password,
@@ -73,6 +74,7 @@ class AuthController extends GetxController {
           password.isNotEmpty &&
           image != null) {
         // Create user with email & password
+        isLoading.value = true; // Start loading
         UserCredential cred = await firebaseAuth.createUserWithEmailAndPassword(
           email: email,
           password: password,
@@ -99,11 +101,15 @@ class AuthController extends GetxController {
       }
     } catch (e) {
       Get.snackbar('Error Creating Account', e.toString());
+    } finally {
+      isLoading.value = false; // End loading
     }
   }
 
   void loginUser(String email, String password) async {
     try {
+      isLoading.value = true; // Start loading
+
       if (email.isNotEmpty && password.isNotEmpty) {
         await firebaseAuth.signInWithEmailAndPassword(
           email: email,
@@ -114,6 +120,8 @@ class AuthController extends GetxController {
       }
     } catch (e) {
       Get.snackbar('Error Logging in', e.toString());
+    } finally {
+      isLoading.value = false; // End loading
     }
   }
 
