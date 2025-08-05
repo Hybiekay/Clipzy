@@ -314,8 +314,8 @@ class _VideoScreenState extends State<VideoScreen> {
                                 },
                                 child: Column(
                                   children: [
-                                    const Icon(
-                                      Ionicons.s,
+                                    Icon(
+                                      Ionicons.share,
                                       size: 30,
                                       color: Colors.white,
                                     ),

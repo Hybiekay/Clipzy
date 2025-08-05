@@ -1,5 +1,3 @@
-// views/messages/chat_detail_screen.dart
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clipzy/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,6 +10,7 @@ class ChatDetailScreen extends StatefulWidget {
   final String receiverId;
   final String userName;
   final String otherUserImage;
+
   const ChatDetailScreen({
     super.key,
     required this.chatId,
@@ -73,14 +72,31 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
-        leading: CircleAvatar(
-          radius: 26,
-          backgroundImage: CachedNetworkImageProvider(widget.otherUserImage),
+        titleSpacing: 0,
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: 18,
+              backgroundImage: CachedNetworkImageProvider(
+                widget.otherUserImage,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                isEditing ? "Editing..." : widget.userName,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
         ),
-        title: Text(isEditing ? "Edit Message" : widget.userName),
-        centerTitle: true,
         actions:
             isEditing
                 ? [
@@ -114,7 +130,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                   reverse: true,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
-                    vertical: 20,
+                    vertical: 10,
                   ),
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
@@ -124,77 +140,110 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                     final timeString =
                         time != null ? DateFormat('hh:mm a').format(time) : '';
 
+                    final bubbleColor =
+                        isMe
+                            ? theme.colorScheme.primary.withOpacity(0.9)
+                            : theme.cardColor;
+
+                    final textColor =
+                        isMe ? Colors.white : theme.textTheme.bodyLarge?.color;
+
                     return GestureDetector(
                       onLongPress: () {
                         if (isMe) {
                           showModalBottomSheet(
                             context: context,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(16),
+                              ),
+                            ),
                             builder:
-                                (_) => Padding(
-                                  padding: const EdgeInsets.all(20),
-                                  child: Wrap(
-                                    children: [
-                                      ListTile(
-                                        leading: const Icon(Icons.edit),
-                                        title: const Text("Edit"),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                          _startEdit(msg.id, msg['text']);
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const Icon(Icons.delete),
-                                        title: const Text("Delete"),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                          _deleteMessage(msg.id);
-                                        },
-                                      ),
-                                    ],
-                                  ),
+                                (_) => Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ListTile(
+                                      leading: const Icon(Icons.edit),
+                                      title: const Text("Edit"),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        _startEdit(msg.id, msg['text']);
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(Icons.delete),
+                                      title: const Text("Delete"),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        _deleteMessage(msg.id);
+                                      },
+                                    ),
+                                  ],
                                 ),
                           );
                         }
                       },
-                      child: Align(
-                        alignment:
-                            isMe ? Alignment.centerRight : Alignment.centerLeft,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 10,
-                          ),
-                          margin: const EdgeInsets.symmetric(vertical: 4),
-                          constraints: const BoxConstraints(maxWidth: 280),
-                          decoration: BoxDecoration(
-                            color: isMe ? Colors.blueAccent : Colors.grey[300],
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Column(
-                            crossAxisAlignment:
-                                isMe
-                                    ? CrossAxisAlignment.end
-                                    : CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                msg['text'],
-                                style: TextStyle(
-                                  color: isMe ? Colors.white : Colors.black87,
-                                  fontSize: 16,
+                      child: Row(
+                        mainAxisAlignment:
+                            isMe
+                                ? MainAxisAlignment.end
+                                : MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            child: Column(
+                              crossAxisAlignment:
+                                  isMe
+                                      ? CrossAxisAlignment.end
+                                      : CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 8,
+                                  ),
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 220,
+                                    minWidth: 70,
+                                  ),
+
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: bubbleColor,
+                                    borderRadius: BorderRadius.circular(
+                                      15,
+                                    ).copyWith(
+                                      bottomRight: Radius.circular(
+                                        isMe ? 0 : 15,
+                                      ),
+                                      bottomLeft: Radius.circular(
+                                        isMe ? 15 : 0,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    msg['text'],
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: textColor,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                timeString,
-                                style: TextStyle(
-                                  color:
-                                      isMe ? Colors.white70 : Colors.grey[600],
-                                  fontSize: 11,
+
+                                const SizedBox(height: 2),
+                                Text(
+                                  timeString,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: isMe ? Colors.white70 : Colors.grey,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     );
                   },
@@ -202,32 +251,47 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               },
             ),
           ),
-          _buildMessageInput(),
+          _buildMessageInput(theme),
         ],
       ),
     );
   }
 
-  Widget _buildMessageInput() {
+  Widget _buildMessageInput(ThemeData theme) {
     return SafeArea(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          boxShadow: [
+            BoxShadow(
+              color: theme.shadowColor.withOpacity(0.04),
+              offset: const Offset(0, -1),
+              blurRadius: 2,
+            ),
+          ],
+        ),
         child: Row(
           children: [
             Expanded(
               child: TextField(
                 controller: _messageController,
+                textCapitalization: TextCapitalization.sentences,
+                style: theme.textTheme.bodyMedium,
                 decoration: InputDecoration(
                   hintText:
-                      isEditing ? "Edit message..." : "Type your message...",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
+                      isEditing ? "Edit your message..." : "Type a message...",
+                  fillColor:
+                      theme.inputDecorationTheme.fillColor ??
+                      theme.colorScheme.surfaceVariant,
                   filled: true,
                   contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(28),
+                    borderSide: BorderSide.none,
                   ),
                 ),
               ),
@@ -235,13 +299,10 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             const SizedBox(width: 8),
             GestureDetector(
               onTap: _sendMessage,
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.blueAccent,
-                ),
-                child: const Icon(Icons.send, color: Colors.white, size: 22),
+              child: CircleAvatar(
+                backgroundColor: theme.colorScheme.primary,
+                radius: 22,
+                child: const Icon(Icons.send, color: Colors.white, size: 20),
               ),
             ),
           ],

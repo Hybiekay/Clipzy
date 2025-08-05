@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
       title: 'ClipZy',
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: backgroundColor,
+        colorScheme: ColorScheme.dark().copyWith(primary: buttonColor),
       ),
       home: LoginScreen(),
     );
