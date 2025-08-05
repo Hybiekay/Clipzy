@@ -120,9 +120,9 @@ class _UserListScreenState extends State<UserListScreen> {
                     Get.to(
                       () => ChatDetailScreen(
                         chatId: chatId,
-                        userId: currentUserId,
                         receiverId: user.uid,
                         userName: user.name,
+                        otherUserImage: user.profilePhoto,
                       ),
                     );
                   },

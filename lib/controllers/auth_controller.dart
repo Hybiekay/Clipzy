@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloudinary_api/uploader/cloudinary_uploader.dart';
 import 'package:cloudinary_url_gen/cloudinary.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:clipzy/constants.dart';
@@ -123,6 +124,12 @@ class AuthController extends GetxController {
     } finally {
       isLoading.value = false; // End loading
     }
+  }
+
+  void saveTokenToDatabase() async {
+    final token = await FirebaseMessaging.instance.getToken();
+    final userId = user.uid;
+    firestore.collection('users').doc(userId).update({'fcmToken': token});
   }
 
   void signOut() async {

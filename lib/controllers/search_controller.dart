@@ -23,15 +23,11 @@ class SearchController extends GetxController {
       List<User> retVal = [];
       // log(query.docs);
       for (var elem in query.docs) {
-        // log("❌ Error mapping searched user: ${elem.data()}");
-
         try {
           final user = User.fromSnap(elem);
           if (user.uid != currentUserId) {
             retVal.add(user);
           }
-
-          retVal.add(user);
         } catch (e, stackTrace) {
           log("❌ Error mapping user: ${elem.id}, error: $e");
           log(stackTrace.toString());

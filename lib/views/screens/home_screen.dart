@@ -22,6 +22,26 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   @override
+  void initState() {
+    // requestPermission(),
+    super.initState();
+  }
+
+  //   void requestPermission() async {
+  //   FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  //   NotificationSettings settings = await messaging.requestPermission(
+  //     alert: true,
+  //     badge: true,
+  //     sound: true,
+  //   );
+
+  //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+  //     print('User granted permission');
+  //   }
+  // }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
